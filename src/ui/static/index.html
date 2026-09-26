@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ShiftVoice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 12h4l2-6 4 12 2-6h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">ShiftVoice</div>
+        <div class="brand-sub" id="hospital">Staffing line</div>
+      </div>
+    </div>
+    <div class="clock" id="clock">--</div>
+    <div class="controls">
+      <span class="pill" id="llm-pill" title="">LLM</span>
+      <label class="toggle" title="Who answers the agent's outbound calls">
+        <span>Candidates</span>
+        <select id="candidate-mode">
+          <option value="simulated">Simulated</option>
+          <option value="live">Live (you answer)</option>
+        </select>
+      </label>
+      <button class="btn ghost" id="voice-toggle" aria-pressed="true" title="Speak call audio in this browser">🔊 Voice on</button>
+      <button class="btn ghost" id="reset">Reset demo</button>
+    </div>
+  </header>
+
+  <section class="metrics" id="metrics"></section>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="live" role="tab">Live call-outs</button>
+    <button class="tab" data-tab="leave" role="tab">Leave &amp; approvals <span class="count" id="queue-count"></span></button>
+    <button class="tab" data-tab="schedule" role="tab">Schedule</button>
+    <button class="tab" data-tab="audit" role="tab">Audit log</button>
+  </nav>
+
+  <main>
+    <section class="tabpanel active" id="tab-live">
+      <div class="live-grid">
+        <div class="col">
+          <h2>Today's coverage</h2>
+          <div id="coverage"></div>
+        </div>
+
+        <div class="col">
+          <h2>Staffing line</h2>
+          <div class="card phone" id="phone">
+            <div class="phone-head">
+              <label>Caller
+                <select id="caller"></select>
+              </label>
+              <button class="btn primary" id="call-btn">Call in</button>
+              <button class="btn danger hidden" id="hangup-btn">Hang up</button>
+            </div>
+            <div class="transcript" id="inbound-transcript">
+              <div class="empty">Pick a caller and press <b>Call in</b>. Then talk (Chrome mic) or type.</div>
+            </div>
+            <div class="composer">
+              <button class="mic" id="mic-btn" title="Hold a conversation by voice" disabled>
+                <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-2.1A7 7 0 0 0 19 12h-2Z" fill="currentColor"/></svg>
+              </button>
+              <input id="say-input" placeholder="Say something as the caller…" autocomplete="off" disabled>
+              <button class="btn" id="send-btn" disabled>Send</button>
+            </div>
+            <div class="chips" id="chips"></div>
+          </div>
+
+          <h2>Agent's outbound calls</h2>
+          <div id="outbound"></div>
+        </div>
+
+        <div class="col">
+          <h2>Backfill</h2>
+          <div id="gaps"><div class="card empty">No open gaps. When someone calls out, the ranked call list appears here.</div></div>
+          <h2>Charge nurse inbox</h2>
+          <div id="notifications"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tabpanel" id="tab-leave">
+      <div class="two-col">
+        <div>
+          <h2>Needs a supervisor</h2>
+          <div id="queue"></div>
+        </div>
+        <div>
+          <h2>All requests <span class="muted small">(every decision shows the rules it checked)</span></h2>
+          <div id="requests"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tabpanel" id="tab-schedule">
+      <div class="schedule-head">
+        <h2>Coverage, next 28 days</h2>
+        <div class="legend">
+          <span><i class="sw ok"></i>Above minimum</span>
+          <span><i class="sw at_min"></i>At minimum</span>
+          <span><i class="sw short"></i>Short</span>
+          <span><i class="sw blackout"></i>Blackout</span>
+        </div>
+      </div>
+      <div class="card grid-wrap"><div id="grid"></div></div>
+      <div id="shift-detail"></div>
+    </section>
+
+    <section class="tabpanel" id="tab-audit">
+      <h2>Audit log</h2>
+      <div class="card"><table class="audit" id="audit"></table></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
